@@ -19,6 +19,7 @@ class Vtk < Formula
   option 'pyqt',      'Make python wrapped classes available to SIP/PyQt'
   option 'qt',        'Enable Qt4 extension via the Homebrew qt formula'
   option 'qt-extern', 'Enable Qt4 extension via non-Homebrew external Qt4'
+  option 'tk',        'Enable Tk'
   option 'tcl',       'Enable Tcl wrapping of VTK classes'
   option 'x11',       'Enable X11 extension rather than OSX native Aqua'
 
@@ -69,8 +70,15 @@ class Vtk < Formula
       args << '-DVTK_USE_QT=ON'
       args << '-DVTK_USE_QVTK=ON'
     end
-
-    args << '-DVTK_WRAP_TCL=ON' if build.include? 'tcl'
+    
+    if build.include? 'tcl'
+       args << '-DVTK_USE_TK=ON'
+       args << '-DVTK_WRAP_TCL=ON'
+    elsif build.include? 'tk' 
+      args << '-DVTK_USE_TK=ON' 
+    else
+      args << '-DVTK_USE_TK=OFF' 
+    end
 
     # Cocoa for everything except x11
     if build.include? 'x11'
