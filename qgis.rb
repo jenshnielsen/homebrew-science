@@ -38,9 +38,18 @@ class Qgis < Formula
   depends_on 'gettext' if build.with? 'grass'
   depends_on 'postgis' => :optional
 
+  def patches
+    # make honoring -DPYTHON_LIBRARY more solid. This is taken from a Qgis pull request. The present version
+    # looks for the existense of a file -DPYTHON_LIBRARY not what the variable points to. This breaks 
+    # linking agains homebrew python.
+    'https://github.com/mbernasocchi/Quantum-GIS/commit/51fdbcbb0d842183498f0052a704d94222ffbac2.patch'
+  end
+
   def install
     # Set bundling level back to 0 (the default in all versions prior to 1.8.0)
     # so that no time and energy is wasted copying the Qt frameworks into QGIS.
+    # At the moment Qgis uses the old -DPYTHON_INCLUDE_PATH not -DPYTHON_INCLUDE_DIR
+    # this may change in the future so we set both.
     args = std_cmake_args.concat %W[
       -DQWT_INCLUDE_DIR=#{Formula.factory('qwt').opt_prefix}/lib/qwt.framework/Headers/
       -DQWT_LIBRARY=#{Formula.factory('qwt').opt_prefix}/lib/qwt.framework/qwt
@@ -50,6 +59,7 @@ class Qgis < Formula
       -DQGIS_MACAPP_DEV_PREFIX='#{prefix}/Frameworks'
       -DQGIS_MACAPP_INSTALL_DEV=YES
       -DPYTHON_INCLUDE_DIR='#{python.incdir}'
+      -DPYTHON_INCLUDE_PATH='#{python.incdir}'
       -DPYTHON_LIBRARY='#{python.libdir}/lib#{python.xy}.dylib'
     ]
 
