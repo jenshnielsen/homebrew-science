@@ -5,12 +5,12 @@ class Vmtk < Formula
   url 'http://sourceforge.net/projects/vmtk/files/vmtk/1.0/vmtk-1.0.1.tar.gz'
   sha1 'ae2da67e60a288512158e9361106aa3c789c14b9'
 
-  head 'git://github.com/vmtk/vmtk.git'
+  head 'https://github.com/vmtk/vmtk.git'
 
   depends_on 'cmake' => :build
   depends_on 'insighttoolkit3'
   depends_on 'vtk'
-  
+
   def install
     args = std_cmake_args + %W[
       -DUSE_SYSTEM_ITK=ON
@@ -23,7 +23,7 @@ class Vmtk < Formula
       system "make"
       system "make install"
       #Install the files since make install does not
-      (prefix + 'lib/python2.7/site-packages/').install 'Install/lib/vmtk/vmtk/'
+      (lib + 'python2.7/site-packages/').install 'Install/lib/vmtk/vmtk/'
       lib.install "Install/lib/vmtk"
       bin.install Dir['Install/bin/*']
       include.install Dir['Install/include/*']
