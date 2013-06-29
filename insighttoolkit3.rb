@@ -6,7 +6,7 @@ class Insighttoolkit3 < Formula
   sha1 'e35f2971244870adcd0b479ee74660a216408e97'
 
   head 'git://itk.org/ITK.git'
-  
+
   keg_only "Conflicts with Insighttoolkit (4.x)."
   option 'examples', 'Compile and install various examples'
   option 'with-opencv-bridge', 'Include OpenCV bridge'
