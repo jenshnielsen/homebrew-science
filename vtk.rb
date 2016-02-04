@@ -31,6 +31,7 @@ class Vtk < Formula
   depends_on "qt5" => :optional
 
   depends_on :python => :recommended if MacOS.version <= :snow_leopard
+  depends_on :python3 => :optional
 
   depends_on "boost" => :recommended
   depends_on "fontconfig" => :recommended
@@ -48,6 +49,16 @@ class Vtk < Formula
     elsif build.with? "qt5"
       depends_on "sip"
       depends_on "pyqt5" => ["with-python", "without-python3"]
+    end
+  end
+
+  if build.with? "python3"
+    if build.with? "qt"
+      depends_on "sip"
+      depends_on "pyqt" => ["with-python3"]
+    elsif build.with? "qt5"
+      depends_on "sip"
+      depends_on "pyqt5" => ["with-python3"]
     end
   end
 
@@ -107,7 +118,7 @@ class Vtk < Formula
     ENV.cxx11 if build.cxx11?
 
     mkdir "build" do
-      if build.with? "python"
+      if build.with?("python") && build.without?("python3")
         args << "-DVTK_WRAP_PYTHON=ON"
         # CMake picks up the system"s python dylib, even if we have a brewed one.
         args << "-DPYTHON_LIBRARY='#{`python-config --prefix`.chomp}/lib/libpython2.7.dylib'"
@@ -118,6 +129,22 @@ class Vtk < Formula
           args << "-DVTK_WRAP_PYTHON_SIP=ON"
           args << "-DSIP_PYQT_DIR='#{Formula["pyqt"].opt_share}/sip'"
         end
+      elsif build.without?("python") && build.with?("python3")
+        args << "-DVTK_WRAP_PYTHON=ON"
+        args << "-DPYTHON_EXECUTABLE=/usr/local/bin/python3"
+        args << "-DPYTHON_INCLUDE_DIR='#{`python3-config --prefix`.chomp}/include/python3.5m'"
+        # CMake picks up the system"s python dylib, even if we have a brewed one.
+        args << "-DPYTHON_LIBRARY='#{`python3-config --prefix`.chomp}/lib/libpython3.5.dylib'"
+        # Set the prefix for the python bindings to the Cellar
+        args << "-DVTK_INSTALL_PYTHON_MODULE_DIR='#{lib}/python3.5/site-packages'"
+
+        if build.with? "qt"
+          args << "-DVTK_WRAP_PYTHON_SIP=ON"
+          args << "-DSIP_PYQT_DIR='#{Formula["pyqt"].opt_share}/sip'"
+        end
+      elsif build.with?("python3") && build.with?("python")
+        # Does not currenly support building both python 2 and 3 versions
+         odie "VTK: Does not currently support building both python 2 and 3 wrappers"
       end
       args << ".."
       system "cmake", *args
