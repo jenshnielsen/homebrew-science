@@ -1,10 +1,10 @@
 class Vtk < Formula
   homepage "http://www.vtk.org"
-  url "http://www.vtk.org/files/release/6.3/VTK-6.3.0.tar.gz"
-  mirror "https://fossies.org/linux/misc/VTK-6.3.0.tar.gz"
-  sha256 "92a493354c5fa66bea73b5fc014154af5d9f3f6cee8d20a826f4cd5d4b0e8a5e"
+  url "http://www.vtk.org/files/release/7.0/VTK-7.0.0.tar.gz"
+  mirror "https://fossies.org/linux/misc/VTK-7.0.0.tar.gz"
+  sha256 "78a990a15ead79cdc752e86b83cfab7dbf5b7ef51ba409db02570dbdd9ec32c3"
+
   head "https://github.com/Kitware/VTK.git"
-  revision 1
 
   bottle do
     sha256 "7e2ded78d69e2cb86e30f2cece78ab66acf553970676251e3d32685fdf7c7443" => :el_capitan
