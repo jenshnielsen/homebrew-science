@@ -54,11 +54,11 @@ class Vtk < Formula
 
   if build.with? "python3"
     if build.with? "qt"
-      depends_on "sip"
-      depends_on "pyqt" => ["with-python3"]
+      depends_on "sip" => ["with-python3", "without-python"]
+      depends_on "pyqt" => ["with-python3", "without-python" ]
     elsif build.with? "qt5"
-      depends_on "sip"
-      depends_on "pyqt5" => ["with-python3"]
+      depends_on "sip"   => ["with-python3", "without-python"]
+      depends_on "pyqt5"
     end
   end
 
@@ -125,9 +125,10 @@ class Vtk < Formula
         # Set the prefix for the python bindings to the Cellar
         args << "-DVTK_INSTALL_PYTHON_MODULE_DIR='#{lib}/python2.7/site-packages'"
 
-        if build.with? "qt"
+        if build.with?("qt") || build.with?("qt5")
           args << "-DVTK_WRAP_PYTHON_SIP=ON"
-          args << "-DSIP_PYQT_DIR='#{Formula["pyqt"].opt_share}/sip'"
+          args << "-DSIP_PYQT_DIR='#{Formula["pyqt"].opt_share}/sip'" if build.with? "qt"
+          args << "-DSIP_PYQT_DIR='#{Formula["pyqt5"].opt_share}/sip'" if build.with? "qt5"
         end
       elsif build.without?("python") && build.with?("python3")
         args << "-DVTK_WRAP_PYTHON=ON"
@@ -138,9 +139,10 @@ class Vtk < Formula
         # Set the prefix for the python bindings to the Cellar
         args << "-DVTK_INSTALL_PYTHON_MODULE_DIR='#{lib}/python3.5/site-packages'"
 
-        if build.with? "qt"
+        if build.with?("qt") || build.with?("qt5")
           args << "-DVTK_WRAP_PYTHON_SIP=ON"
-          args << "-DSIP_PYQT_DIR='#{Formula["pyqt"].opt_share}/sip'"
+          args << "-DSIP_PYQT_DIR='#{Formula["pyqt"].opt_share}/sip'" if build.with? "qt"
+          args << "-DSIP_PYQT_DIR='#{Formula["pyqt5"].opt_share}/sip'" if build.with? "qt5"
         end
       elsif build.with?("python3") && build.with?("python")
         # Does not currenly support building both python 2 and 3 versions
